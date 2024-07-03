@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mushroom Species Predictor</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+<body>
+    <main class="upload-container">
+        <header class="heading">
+            <div class="logo">
+                <img src="/static/fungifinder.svg" alt="Fungi Finder logo">
+            </div>
+            <p>Please select an image:</p>
+        </header>
+
+        <form id="upload-form" action="/" method="post" enctype="multipart/form-data">
+            <div class="image-div">
+                <input type="file" name="image" id="file" accept="image/*" onchange="previewFile()">
+                <img id="preview" src="" height="200" alt="Uploaded image preview" class="hidden">  
+            </div>
+            <button type="submit" class="button">Predict</button>
+        </form>
+
+        <p id="prediction"></p>
+    </main>
+
+    <script>
+    function previewFile() {
+        const preview = document.getElementById('preview');
+        const file = document.getElementById('file').files[0];
+        const reader = new FileReader();
+
+        reader.addEventListener("load", () => {
+            preview.classList.remove('hidden');
+            preview.src = reader.result;
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            preview.classList.add('hidden');
+            preview.src = '';
+        }
+    }
+
+    $(document).ready(function() {
+        $('#upload-form').on('submit', function(e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+            $('#prediction').text('Loading...');
+
+            $.ajax({
+                type: 'POST',
+                url: '/',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    if (data.error) {
+                        $('#prediction').text('Error: ' + data.error);
+                    } else {
+                        $('#prediction').html(`Predicted species: ${data.prediction}<br>Description: ${data.description}`);
+                    }
+                },
+                error: function(error) {
+                    $('#prediction').text('An error occurred. Please try again.');
+                    console.log(error);
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>
+
