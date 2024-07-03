@@ -19,8 +19,8 @@ This project is a web-based application designed to predict the species of mushr
 Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/fungi-finder.git
-cd fungi-finder
+git clone https://github.com/simonakardel/Mushroom_species_predictor.git
+cd Mushroom_species_predictor
 ```
 
 Create and activate virtual environment:
